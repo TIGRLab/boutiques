@@ -256,7 +256,7 @@ class LocalExecutor(object):
                 for (key, val) in list(envVars.items()):
                     envString += "SINGULARITYENV_{0}='{1}' ".format(key, val)
             # Change launch (working) directory if desired
-            launchDir = self.launchDir
+            launchDir = self.workDir
             if launchDir is None:
                 launchDir = op.realpath('./')
             launchDir = op.realpath(launchDir)
@@ -269,7 +269,7 @@ class LocalExecutor(object):
             mount_strings = [] if not mount_strings else mount_strings
             mount_strings = [op.realpath(m.split(":")[0])+":"+m.split(":")[1]
                              for m in mount_strings]  #converts them to the real path
-            mount_strings.append(op.realpath('./') + ':' + launchDir) #adds work dir to the list of strings to append - do we need this? 
+            #mount_strings.append(op.realpath('./') + ':' + launchDir) #adds work dir to the list of strings to append - do we need this? yea gonna cut this out for now
             if conType == 'docker':
                 envString = " "
                 if envVars:

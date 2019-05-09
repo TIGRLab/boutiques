@@ -121,6 +121,9 @@ def execute(*params):
         parser.add_argument("--imagepath", action="store",
                             help="Path to Singularity image. "
                             "If not specified, will use current directory.")
+        parser.add_argument("-w", "--workdir", action="store",
+                            help="Directory to mount as your workdir. This will hold tmp files."
+                            " Your current directory is the default ")
         results = parser.parse_args(params)
         descriptor = results.descriptor
         inp = results.invocation
@@ -135,7 +138,8 @@ def execute(*params):
                                   "debug": results.debug,
                                   "changeUser": results.user,
                                   "stream": results.stream,
-                                  "imagePath": results.imagepath})
+                                  "imagePath": results.imagepath,
+                                  "workDir": results.workdir})
         # Execute it
         return executor.execute(results.volumes)
 

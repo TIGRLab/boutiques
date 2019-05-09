@@ -268,8 +268,8 @@ class LocalExecutor(object):
             # Run it in docker
             mount_strings = [] if not mount_strings else mount_strings
             mount_strings = [op.realpath(m.split(":")[0])+":"+m.split(":")[1]
-                             for m in mount_strings]
-            mount_strings.append(op.realpath('./') + ':' + launchDir)
+                             for m in mount_strings]  #converts them to the real path
+            mount_strings.append(op.realpath('./') + ':' + launchDir) #adds work dir to the list of strings to append - do we need this? 
             if conType == 'docker':
                 envString = " "
                 if envVars:
@@ -312,17 +312,19 @@ class LocalExecutor(object):
                               op.realpath(op.expanduser('~')),
                               op.expanduser('~')]
 
+#COMMENTED OUT THIS PART, SEEMS TO FIX THE MOUNTING THING, YAY. 
+
                 # Ensures the set of paths provided has no overlap
-                compaths = list()
-                for idxm, m in enumerate(mount_strings):
-                    for n in mount_strings[idxm:]:
-                        if n != m:
-                            tmp = op.dirname(op.commonprefix([n, m]))
-                            if tmp != '/':
-                                compaths += [tmp]
-                    if not any(m.startswith(c) for c in compaths):
-                        compaths += [m]
-                mount_strings = set(compaths)
+         #    compaths = list()
+          #   for idxm, m in enumerate(mount_strings):
+          #      for n in mount_strings[idxm:]:
+          #              if n != m:
+          #                  tmp = op.dirname(op.commonprefix([n, m]))
+          #                  if tmp != '/':
+          #                      compaths += [tmp]
+          #          if not any(m.startswith(c) for c in compaths):
+          #              compaths += [m]
+          #      mount_strings = set(compaths)
 
                 # Only adds mount points for those not already included
                 singularity_mounts = ""

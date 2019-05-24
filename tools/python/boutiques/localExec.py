@@ -233,9 +233,17 @@ class LocalExecutor(object):
         # Note that docker/singularity cannot do a local volume
         # mount of files starting with a '.', hence this one does not
         millitime = int(time.time()*1000)
-        dsname = ('temp-' +
+
+        # Change launch (working) directory if desired
+        launchDir = self.workDir
+        if launchDir is None:
+            launchDir = op.realpath('./')
+        launchDir = op.realpath(launchDir)
+
+
+        dsname = (str(launchDir)+'/temp-' +
                   str(random.SystemRandom().randint(0, int(millitime))) +
-                  "-" + str(millitime) + '.localExec.boshjob.sh')
+                  "-" + str(millitime) + '.localExec.boshjob.sh') #this doesnt workkkkk
         dsname = op.realpath(dsname)
         # If container is present, alter the command template accordingly
         container_location = ""
@@ -255,11 +263,7 @@ class LocalExecutor(object):
             if envVars:
                 for (key, val) in list(envVars.items()):
                     envString += "SINGULARITYENV_{0}='{1}' ".format(key, val)
-            # Change launch (working) directory if desired
-            launchDir = self.workDir
-            if launchDir is None:
-                launchDir = op.realpath('./')
-            launchDir = op.realpath(launchDir)
+
             # Get the container options
             conOptsString = ""
             if conOpts:
@@ -269,7 +273,7 @@ class LocalExecutor(object):
             mount_strings = [] if not mount_strings else mount_strings
             mount_strings = [op.realpath(m.split(":")[0])+":"+m.split(":")[1]
                              for m in mount_strings]  #converts them to the real path
-            #mount_strings.append(op.realpath('./') + ':' + launchDir) #adds work dir to the list of strings to append - do we need this? yea gonna cut this out for now
+            mount_strings.append(launchDir + ':' + launchDir) #adds work dir to the list of strings to append
             if conType == 'docker':
                 envString = " "
                 if envVars:
@@ -312,7 +316,7 @@ class LocalExecutor(object):
                               op.realpath(op.expanduser('~')),
                               op.expanduser('~')]
 
-#COMMENTED OUT THIS PART, SEEMS TO FIX THE MOUNTING THING, YAY. 
+#COMMENTED OUT THIS PART, SEEMS TO FIX THE MOUNTING THING, YAY.
 
                 # Ensures the set of paths provided has no overlap
          #    compaths = list()
@@ -335,7 +339,7 @@ class LocalExecutor(object):
                 container_command = (envString + 'singularity exec '
                                      '--cleanenv ' +
                                      singularity_mounts +
-                                     ' -W ' + launchDir + ' ' +
+                                     ' -W ' + launchDir + ' ' +   #as far as I can tell, this flag accomplishes nothing on singularity's end
                                      conOptsString +
                                      str(conPath) + ' ' + dsname)
             else:

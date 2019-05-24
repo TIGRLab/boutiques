@@ -1,3 +1,9 @@
+The TIGRLab's HOTFIX for boutiques. Ask @gabiherman if you have any questions, she will probably (maybe?) be able to answer them.
+These changes affect the way that `bosh exec` mounts directories to singularity containers. 
+
+One thing that we discovered is that singularity's -W flag seems to not do... anything? So that's weird. To address that, we just mounted the -workdir flag as well. 
+
+
 <img src="http://boutiques.github.io/images/logo.png" width="150" alt="Boutiques logo"/>
 
 # Boutiques
@@ -12,8 +18,7 @@ Boutiques is a cross-platform descriptive command-line framework for application
 
 # The Power of Boutiques Tools
 
-While the Boutiques framework enables a descriptive representation of command-line utilities and informs users of their usage,
-the Boutiques Python tool provides users with functionality to perform a variety of operations on these descriptors.
+While the Boutiques framework enables a descriptive representation of command-line utilities and informs users of their usage, the Boutiques Python tool provides users with functionality to perform a variety of operations on these descriptors.
 
 ## Installation
 

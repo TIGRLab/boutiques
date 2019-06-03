@@ -333,7 +333,7 @@ class LocalExecutor(object):
                 # Only adds mount points for those not already included
                 singularity_mounts = ""
                 for m in mount_strings:
-                    if not any(d in m for d in def_mounts):
+                    if not any([d for d in def_mounts if m.startswith(d)]):
                         singularity_mounts += "-B {0} ".format(m)
 
                 container_command = (envString + 'singularity exec '
